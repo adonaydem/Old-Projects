@@ -1,0 +1,89 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+{% if session['total_sales'] %}
+    <table class="table table-bordered">
+        <tr>
+            <th>Total Sales</th>
+            <td>{{session['total_sales']}}</td>
+        </tr>
+    {% endif %}
+    {% if session['profit'] %}
+        <tr>
+            <th>Profit</th>
+            <td>{{session['profit']}}</td>
+        </tr>
+    </table>
+    {% endif %}
+    {% if session['best_seller'] %}
+    <h5>Best Seller Product</h5>
+    <table class="table table-bordered">
+        <tr>
+            <td>Product ID</td>
+            <td>Product Name</td>
+            <td>Quantity</td>
+        </tr>
+        {% for item in session['best_seller'] %}
+        <tr>
+            <td>{{ item['product_id'] }}</td>
+            <td>{{ item['product_name'] }}</td>
+            <td>{{ item['quantity'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if session['product_profit'] %}
+    <h5>Profit By Product</h5>
+    <table class="table table-bordered">
+        <tr>
+            <td>Product ID</td>
+            <td>Product Name</td>
+            <td>Profit</td>
+        </tr>
+        {% for item in session['product_profit'] %}
+        <tr>
+            <td>{{ item['product_id'] }}</td>
+            <td>{{ item['product_name'] }}</td>
+            <td>{{ item['product_profit'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+    {% if session['worst_seller'] %}
+    <h5>Worst Seller Product</h5>
+    <table class="table table-bordered">
+        <tr>
+            <td>Product ID</td>
+            <td>Product Name</td>
+            <td>Quantity</td>
+        </tr>
+        {% for item in session['worst_seller'] %}
+        <tr>
+            <td>{{ item['product_id'] }}</td>
+            <td>{{ item['product_name'] }}</td>
+            <td>{{ item['quantity'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if session['best_emp'] %}
+    <h5>High Performing Employee(Sales)</h5>
+    <table class="table table-bordered">
+        <tr>
+            <td>Employee ID</td>
+            <td>Name</td>
+            <td>Quantity Sold</td>
+        </tr>
+        {% for item in session['best_emp'] %}
+        <tr>
+            <td>{{ item['emp_id'] }}</td>
+            <td>{{ item['emp_name'] }}</td>
+            <td>{{ item['quantity'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+{% endblock %}
