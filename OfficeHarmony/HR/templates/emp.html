@@ -1,0 +1,274 @@
+{% extends "layout.html" %}
+{% block nav %}
+    Employee HR Profile
+{% endblock %}
+{% block menu %}
+<div class="menu">
+    <input type="button" value="Attendance" class="btn btn-link" onClick="setvisibilty('div1', 'inline', 1)">
+    <input type="button" value="Personal Details" class="btn btn-link" onClick="setvisibilty('div2', 'inline', 2)">
+    <input type="button" value="Payroll" class="btn btn-link" onClick="setvisibilty('div3', 'inline', 3)">
+    <input type="button" value="Training" class="btn btn-link" onClick="setvisibilty('div4', 'inline', 4)">
+  </div>
+{% endblock %} 
+
+{% block main %}
+{% for message in messages %}
+  <p class="alert alert-danger">{{ message }}</p>
+{% endfor %}
+
+<div id="div1" class="p-3 m-3">
+<div class="container card attend">
+    <p style="text-align: center;">{{datetime}}</p>
+    {% if emp.on_leave == 1 %}
+    <p style="text-align: center;">On Leave: {{ emp.leave_type }}</p>
+    {% elif attended %}
+    <p style="text-align: center;">Attended</p>
+    {% elif absented %}
+    <p style="text-align: center;">Roll has been closed, Flagged as Absent</p>
+    {% else %}
+    <button class="attend btn btn-success" data-user_id="{{user.id}}" data-date="{{datetime}}">Mark my Attendance</button>
+    {% endif %}
+</div>
+
+<div>
+    <p>Absent Records: {{absentee}}</p>
+    <h5>Leave Permission Request</h5>
+    <form method="post" action="{% url 'emp' %}">
+        <div class="mb-3">
+        <select name="leave_type" class="form-control mx-auto w-auto" required>
+            <option disabled selected>Leave Reason</option>
+            <option value="vacation">Annual(Vacation)</option>
+            <option value="sick">Sick</option>
+            <option value="maternity">Maternity</option>
+            <option value="paternity">Paternity</option>
+            <option value="other">Other(Unpaid)</option>
+        </select>
+        </div>
+        <div class="mb-3">
+        <input name="description" class="form-control mx-auto w-auto" placeholder="Description">
+        </div>
+        <div class="mb-3">
+            <textarea name="link" class="form-control mx-auto w-auto" placeholder="Copy link here, for any supporting documents"></textarea>
+        </div>
+        <div class="text-center">
+        <button type="submit" name="request" class="btn btn-primary">Submit</button></div>
+    </form>
+</div>
+</div>
+
+<div id="div2" class="p-3 m-3" style="display: none;">
+<h5>Employee Info</h5>
+<table class="table table-bordered">
+    <tr>
+        <th>Name</th>
+        <td>{{emp.fname}} {{emp.lname}}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{emp.email}}</td>
+    </tr>
+    <tr>
+        <th>Birthdate</th>
+        <td>{{emp.birthdate}}</td>
+    </tr>
+    <tr>
+        <th>Department</th>
+        <td>{{emp.department}}</td>
+    </tr>
+    <tr>
+        <th>Role</th>
+        <td>{{emp.role}}</td>
+    </tr>
+    <tr>
+        <th>Education</th>
+        <td>{{emp.education}}</td>
+    </tr>
+</table>
+</div>
+
+<div id="div3" class="p-3 m-3" style="display: none;">
+{% if payroll %}
+<h5>Payroll and Benefits Info</h5>
+<table class="table table-bordered">
+    <tr>
+        <th>Base Salary</th>
+        <td>{{payroll.base_salary}}</td>
+    </tr>
+    <tr>
+        <th>Benefit</th>
+        <td>
+            {% if payroll.benefit == "['1']" %}
+                Health Insurance
+            {% elif  payroll.benefit == "['2']" %}
+                House Rent
+            {% elif  payroll.benefit == "['3']" %}
+                Travel Allowance
+            {% elif  payroll.benefit == "['4']" %}
+                Educational Assistance
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Retirement Plan</th>
+        <td>
+            {% if payroll.retirement == 1 %}
+                None
+            {% elif  payroll.retirement == 2 %}
+            Cut from Base (3%)
+            {% elif  payroll.retirement == 3 %}
+                Free Decision
+            {% elif  payroll.retirement == 4 %}
+                National
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <th>Bonus</th>
+        <td>{{payroll.bonus}}</td>
+    </tr>
+    </table>
+{% else %}
+<p class="alert">No payroll Info.</p>
+{% endif %}
+</div>
+<div id="div4" class="p-3 m-3" style="display: none;"> 
+{% if training_due  %}
+<h5>Training Due</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Lecture ID</td>
+            <td>Name</td>
+            <td>Lecture Links</td>
+            <td>Assignment</td>
+            <td>Submission</td>
+        </tr>
+    </thead>
+    {% for entity in training_due %}
+        <tr>
+            <td>{{ entity.training.id }}</td>
+            <td>{{ entity.training.name }}</td>
+            <td>{{ entity.training.lecture }}</td>
+            <td>{{ entity.training.assess }}</td>
+            <td class="training">
+                <form class="submit">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="answer" class="form-control mx-auto textarea"  data-track_id="{{ entity.id }}" data-progress="1" placeholder="Copy a video or document link for your answer." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+{% if sub  %}
+<h5>My Submissions</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Lecture ID</td>
+            <td>Name</td>
+            <td>Lecture Links</td>
+            <td>Assignment</td>
+            <td>Submission</td>
+        </tr>
+    </thead>
+    {% for entity in sub %}
+        <tr>
+            <td>{{ entity.training.id }}</td>
+            <td>{{ entity.training.name }}</td>
+            <td>{{ entity.training.lecture }}</td>
+            <td>{{ entity.training.assess }}</td>
+            <td class="training">
+                <form class="submit">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="answer" class="form-control mx-auto textarea"  data-track_id="{{ entity.id }}" data-progress="1" placeholder="Copy a video or document link for your answer." required>{%if entity.assess %}{{entity.assess}}{% endif %}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% if reject  %}
+<h5>Rejections</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Lecture ID</td>
+            <td>Name</td>
+            <td>Lecture Links</td>
+            <td>Assignment</td>
+            <td>Submission</td>
+        </tr>
+    </thead>
+    {% for entity in reject %}
+        <tr>
+            <td>{{ entity.training.id }}</td>
+            <td>{{ entity.training.name }}</td>
+            <td>{{ entity.training.lecture }}</td>
+            <td>{{ entity.training.assess }}</td>
+            <td class="training">
+                <form class="submit">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="answer" class="form-control mx-auto textarea"  data-track_id="{{ entity.id }}" data-progress="1" placeholder="Copy a video or document link for your answer." required>{%if entity.assess %}{{entity.assess}}{% endif %}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% if accept  %}
+<h5>Accepted Results</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Lecture ID</td>
+            <td>Name</td>
+            <td>Lecture Links</td>
+            <td>Assignment</td>
+            <td>Submission</td>
+        </tr>
+    </thead>
+    {% for entity in accept %}
+        <tr>
+            <td>{{ entity.training.id }}</td>
+            <td>{{ entity.training.name }}</td>
+            <td>{{ entity.training.lecture }}</td>
+            <td>{{ entity.training.assess }}</td>
+            <td>
+                Pass
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endif %}
+</div>
+{% endblock %}
+
+
