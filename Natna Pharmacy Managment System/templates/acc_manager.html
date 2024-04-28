@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+{% block nav %}
+    Account Manager
+{% endblock %}
+{% block menu %}
+<div class="menu">
+    <input type="button" value="History" class="btn btn-link" onClick="setvisibilty('div1', 'inline', 1)">
+    <input type="button" value="Manage Account" class="btn btn-link" onClick="setvisibilty('div2', 'inline', 2)">
+  </div>
+{% endblock %}
+{% block main %}
+
+<div id="div1"  >
+    <h3>Account History</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>type</td>
+                <td>reason</td>
+                <td>amount</td>
+                <td>net</td>
+                <td>Date and Time</td>
+            </tr>
+        </thead>
+        {% if accounts != 'None' %}
+        {% for account in accounts %}
+            <tr>
+                <td>{{ account['id'] }}</td>
+                <td>{{ account['type'] }}</td>
+                <td>{{ account['reason'] }}</td>
+                <td>{{ account['amount'] }}</td>
+                <td>{{ account['net'] }}</td>
+                <td>{{ account['time'] }}</td>
+            </tr>
+        {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">No Data</td>
+            </tr>
+        {% endif %}
+    </table>
+    <form method="get" action="/acc_manager" class="inline">
+        <input type="hidden" name="less" value="{{ session['count']}}">
+        <button type="submit" class="btn btn-primary">Go Back</button>
+    </form>
+    <form method="get" action="/acc_manager" class="inline">
+        <input type="hidden" name="more" value="{{ session['count']}}">
+        <button type="submit" class="btn btn-primary">See more</button>
+    </form>
+<h3>Transaction History</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>ID</td>
+                <td>Product ID</td>
+                <td>Type</td>
+                <td>Quantity</td>
+                <td>Total Price</td>
+                <td>Employee</td>
+                <td>Time</td>
+            </tr>
+        </thead>
+        {% if tran_accounts != 'None' %}
+        {% for account in tran_accounts %}
+            <tr>
+                <td>{{ account['id'] }}</td>
+                <td>{{ account['product_id'] }}</td>
+                <td>{{ account['type'] }}</td>
+                <td>{{ account['quantity'] }}</td>
+                <td>{{ account['total_price'] }}</td>
+                <td>{{ account['emp_id'] }}</td>
+                <td>{{ account['time'] }}</td>
+            </tr>
+        {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6">No Data</td>
+            </tr>
+        {% endif %}
+    </table>
+    <form method="get" action="/acc_manager"class="inline">
+        <input type="hidden" name="less2" value="{{ session['count']}}">
+        <button type="submit" class="btn btn-primary">Go Back</button>
+    </form>
+    <form method="get" action="/acc_manager" class="inline">
+        <input type="hidden" name="more2" value="{{ session['count']}}">
+        <button type="submit" class="btn btn-primary">See more</button>
+    </form>
+</div>
+
+<div class="p-3 m-3" id="div2" style="display:none">
+    <h3>Manage Account</h3>
+    <form action="/acc_manager" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto" name="amount" placeholder="Amount" type="number">
+        </div>
+        <div class="mb-3">
+            <select name="type">
+                <option disabled selected>Type</option>
+                <option name="sales">Withdraw</option>
+                <option name="logistics">Deposit</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Your password" type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" name="reason" placeholder="reason" type="text">
+        </div>
+        <button name="account"class="btn btn-danger" type="submit">Submit</button>
+    </form>
+</div>
+
+{% if error %}
+    <p class="alert alert-danger">Error: Something related to {{error}}</p>
+{% endif %}
+
+{% endblock %}
