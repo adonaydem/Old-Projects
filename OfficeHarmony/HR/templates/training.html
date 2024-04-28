@@ -1,0 +1,133 @@
+{% extends "layout.html" %}
+{% block nav %}
+    Training Data
+{% endblock %}
+
+{% block menu %}
+<div class="menu">
+    <a href="{% url 'emp' %}" class="btn btn-link">My Profile</a>
+    <input type="button" value="Lectures" class="btn btn-link" onClick="setvisibilty('div1', 'inline', 1)">
+    <input type="button" value="Submissions" class="btn btn-link" onClick="setvisibilty('div2', 'inline', 2)">
+    <input type="button" value="Passed Trainees" class="btn btn-link " onClick="setvisibilty('div3', 'inline', 3)">
+</div>
+{% endblock %} 
+
+{% block main %}
+{% for message in messages %}
+  <p class="alert alert-danger">{{ message }}</p>
+{% endfor %}
+
+<div id="div1" class="p-3 m-3 container">
+<h5>Lectures</h5>
+<div class="table-responsive">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Name</td>
+            <td>Lecture</td>
+            <td>Assessment</td>
+        </tr>
+    </thead>
+    {% for entity in training %}
+        <tr>
+            <td>{{ entity.id }}</td>
+            <td>{{ entity.name }}</td>
+            <td>{{ entity.lecture }}</td>
+            <td>{{ entity.assess }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+</div>
+
+<div class="p-3 m-3">
+    <h3>Add Training</h3>
+    <form action="{% url 'training' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <input autocomplete="off"  class="form-control mx-auto w-auto" name="name" placeholder="Lecture Name" type="text" required>
+        </div>
+        <div class="mb-3">
+            <textarea class="form-control mx-auto w-auto" name="lecture" placeholder="Lecture Link(Video, Document..)" required></textarea>
+        </div>
+        <div class="mb-3">
+            <textarea class="form-control mx-auto w-auto" name="assess" placeholder="Write Assessment Prompt, and Criteria" required></textarea>
+        </div>
+        <div class="text-center">
+        <button name="add_training"class="btn btn-primary" type="submit">ADD</button></div>
+    </form>
+</div>
+</div>
+
+<div id="div2" class="p-3 m-3 container" style="display: none;">
+<h5>Submissions</h5>
+<div class="table-responsive">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Lecture ID</td>
+            <td>Name</td>
+            <td>Assessment Response</td>
+        </tr>
+    </thead>
+    {% for entity in sub %}
+        <tr>
+            <td>{{ entity.training.id }}</td>
+            <td>{{ entity.emp_id.email }}</td>
+            <td>{{ entity.assess }}</td>
+            <td>
+                <form method="post" action="{% url 'training' %}">
+                    <input type="hidden" name="id" value="{{entity.id}}">
+                    <button type="submit" class="btn btn-success" name="accept">Accept</button>
+                </form>
+                <form method="post" action="{% url 'training' %}">
+                    <input type="hidden" name="id" value="{{entity.id}}">
+                    <button type="submit" class="btn btn-danger" name="reject">Reject</button>
+                </form>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+</div>
+</div>
+
+<div id="div3" class="p-3 m-3 container" style="display: none;">
+{% if accept  %}
+<h5>Passed Trainees</h5>
+<div class="table-responsive">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>Lecture ID</td>
+            <td>Training Name</td>
+            <td>Employee ID</td>
+            <td>email</td>
+        </tr>
+    </thead>
+    {% for entity in accept %}
+        <tr>
+            <td>{{ entity.training.id }}</td>
+            <td>{{ entity.training.name }}</td>
+            <td>{{ entity.emp_id.id }}</td>
+            <td>{{ entity.emp_id.email }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+</div>
+{% endif %}
+</div>
+{% endblock %}
+
+

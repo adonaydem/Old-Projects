@@ -1,0 +1,109 @@
+{% extends "layout.html" %}
+{% block nav %}
+    Recruitment
+{% endblock %}
+{% block menu %}
+<div class="menu">
+    <a href="{% url 'emp' %}" class="btn btn-link">My Profile</a>
+</div>
+{% endblock %}
+
+{% block main %}
+{% if message %}
+  <p class="alert alert-danger">{{ message }}</p>
+{% endif %}
+
+<div class="p-3 m-3 container">
+    <div class="table-responsive">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Position</td>
+            <td>Department</td>
+            <td>Number Needed</td>
+            <td>Number of Applicants(Max)</td>
+            <td>Description</td>
+            <td>Application Start</td>
+            <td>Application Deadline</td>
+            <td>Review Start</td>
+            <td>OnBoarding</td>
+        </tr>
+    </thead>
+    {% for post in posts %}
+        
+        <tr>
+            
+            <td>{{ post.id }}</td>
+            <td><a href="{% url 'job_post' post.id %}">{{ post.position }}</a></td>
+            <td>{{ post.department }}</td>
+            <td>{{ post.no_positions }}</td>
+            <td>{{ post.no_applicants }}</td>
+            <td>{{ post.description }}</td>
+            <td>{{ post.startdate }}</td>
+            <td>{{ post.enddate }}</td>
+            <td>{{ post.review_startdate }}</td>
+            <td>{{ post.onboarding_date }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+</div>
+{% if has_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if has_previous %}
+            <li class="page-item"><a class="page-link" href="{% url 'emp_data' %}?page={{page_number}}&previous=1">Previous</a></li>
+            {% endif %}
+            {% if has_next %}
+            <li class="page-item"><a class="page-link" href="{% url 'emp_data' %}?page={{page_number}}&next=1">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+<div class="p-3 m-3 col-md-6">
+    <h3>Create Job Post</h3>
+    <form action="{% url 'recruit' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3 col-md-6">
+            <input autocomplete="off"  class="form-control mx-auto w-6" name="position" placeholder="Job Position" type="text" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-6" name="dep" placeholder="Department" type="text" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-6" name="no_applicant" placeholder="Maximum Number of Applications" type="number" required>
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-6" name="no_position" placeholder="Number of Available Positions" type="number" required>
+        </div>
+        <div class="mb-3">
+            <textarea class="form-control mx-auto w-6" name="description" placeholder="Description" type="text" required></textarea>
+        </div>
+        <div class="mb-3">
+            Application Opening Date:
+            <input type="date" name="startdate" class="form-control mx-auto w-auto" required>
+        </div>
+        <div class="mb-3">
+            Application Ending Date:
+            <input type="date" name="enddate" class="form-control mx-auto w-auto" required>
+        </div>
+        <div class="mb-3">
+            Interview and Review Starting Date:
+            <input type="date" name="review_startdate" class="form-control mx-auto w-auto" required>
+        </div>
+        <div class="mb-3">
+            Onboarding Deadline:
+            <input type="date" name="onboarding_date" class="form-control mx-auto w-auto" required>
+        </div>
+        <div class="text-center">
+        <button name="job_post"class="btn btn-warning" type="submit">Post</button></div>
+    </form>
+</div>
+</div>
+{% endblock %}
+
+

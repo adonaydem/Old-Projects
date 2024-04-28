@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" rel="stylesheet">
+        <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"></script>
+        <link href="/static/styles.css" rel="stylesheet">
+        <style>
+            .popup {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                padding: 20px;
+                z-index: 1;
+                background-color:teal;
+            }
+        </style>
+        <title>Office Harmony</title>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                
+
+                document.querySelectorAll(".pay").forEach(function(button){
+                    
+                    button.onclick = function(){
+                        console.log("Ff");
+                        document.querySelector('.popup').style.display = 'block';
+                        const emp_id = button.dataset.emp_id;
+                        document.querySelector('.popup').querySelector(".emp_show").value = emp_id;
+
+
+
+                        document.querySelector('.popup').querySelector(".close").addEventListener('click', function(event) {
+                            document.querySelector('.popup').style.display = 'none';
+                        });
+                    }
+                });
+                document.querySelectorAll('.training').forEach(function(card){
+                    card.onclick = function(){
+                        const target = event.target;
+                        card.querySelector("form").onsubmit = () => {
+                            const content = card.querySelector('.textarea').value;
+                            const track_id = card.querySelector('.textarea').dataset.track_id;
+                            const progress = card.querySelector('.textarea').dataset.progress;
+                            fetch('/emp', {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                track_id: track_id,
+                                content: content,
+                                progress: progress,
+                            })
+                            })
+                            return false;
+                        }
+                    }
+                
+                });
+
+                document.querySelectorAll('.interview_holder').forEach(function(card){
+                    card.onclick = function(){
+                        card.querySelector("form").onsubmit = () => {
+                        const content = card.querySelector('.textarea').value;
+                        const post_id = card.querySelector('.textarea').dataset.post_id
+                        fetch(`/job_post/${post_id}/`, {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            app_id: card.querySelector('.textarea').dataset.app_id,
+                            content: content
+                        })
+                        })
+                        .then(response => response.json())
+                                    .then(result => {
+                                        card.style.backgroundColor="green";
+                                    });
+                        return false;
+                    }
+                    }
+                });
+
+                document.querySelectorAll('.container').forEach(function(card){
+                card.onclick = function(){
+                    const target = event.target;
+                    if (target.classList.contains('attend')) {
+                        const user_id = card.querySelector('.attend').dataset.user_id;
+                        const date = card.querySelector('.attend').dataset.date;
+                        
+                        if ("geolocation" in navigator) {
+                            navigator.geolocation.getCurrentPosition(function(position) {
+                                const latitude = position.coords.latitude;
+                                const longitude = position.coords.longitude;
+                                fetch('/attend', {
+                                    method: 'POST',
+                                    body: JSON.stringify({
+                                        user_id: user_id,
+                                        lat: latitude,
+                                        lon: longitude
+                                    })
+                                })
+                                .then(response => response.json())
+                                .then(result => {
+                                    console.log("ddd");
+                                    const alert = document.createElement("p");
+                                    alert.className="alert alert-warning center";
+                                    if (result.message === "Invalid Location."){
+                                        alert.innerHTML = "Invalid Location.";
+                                    }else{
+                                        card.querySelector('.attend').style.display="none";
+                                        alert.innerHTML="Attended Successfully";
+
+                                    }
+                                    card.append(alert);
+                                });
+                            });
+                        }
+                    }
+                };
+            });
+
+
+
+           
+            });
+        </script>
+    </head>
+    <body>
+
+        <nav class="bg-light border navbar navbar-expand-md navbar-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Office Harmony - {% block nav %}{% endblock %}</a>
+                {% block admin %}{% endblock %}
+                <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar">
+
+                        <ul class="navbar-nav ms-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Log Out</a></li>
+                        </ul>
+                </div>
+            </div>
+        </nav>
+        {% block menu %}{% endblock %}
+        <main >
+            <div class="main container-fluid py-5">
+            {% block main %}{% endblock %}
+            </div>
+        </main>
+
+        <script type="text/javascript">
+             function setvisibilty(id, visibilty, type){
+              document.getElementById(id).style.display=visibilty;
+              switch(type){
+              case 1:
+                document.getElementById("div2").style.display='none';
+                document.getElementById("div3").style.display='none';
+                document.getElementById("div4").style.display='none';
+                document.getElementById("div5").style.display='none';
+                break;
+              case 2:
+                document.getElementById("div1").style.display='none';
+                document.getElementById("div3").style.display='none';
+                document.getElementById("div4").style.display='none';
+                document.getElementById("div5").style.display='none';
+                break;
+              case 3:
+                document.getElementById("div1").style.display='none';
+                document.getElementById("div2").style.display='none';
+                document.getElementById("div4").style.display='none';
+                document.getElementById("div5").style.display='none';
+                break;
+              case 4:
+                document.getElementById("div1").style.display='none';
+                document.getElementById("div2").style.display='none';
+                document.getElementById("div3").style.display='none';
+                document.getElementById("div5").style.display='none';
+                break;
+              case 5:
+                document.getElementById("div1").style.display='none';
+                document.getElementById("div2").style.display='none';
+                document.getElementById("div3").style.display='none';
+                document.getElementById("div4").style.display='none';
+                break;
+              }
+            }
+        </script>
+  </body>
+</html>

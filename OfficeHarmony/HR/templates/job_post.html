@@ -1,0 +1,119 @@
+{% extends "layout.html" %}
+{% block nav %}
+    Recruitment
+{% endblock %} 
+{% block menu %}
+<div class="menu">
+    <input type="button" value="Log Applicant" class="btn btn-link" onClick="setvisibilty('div1', 'inline', 1)">
+    <input type="button" value="Track Applicant" class="btn btn-link" onClick="setvisibilty('div2', 'inline', 2)">
+  </div>
+{% endblock %}
+
+{% block main %}
+{% if message %}
+  <p class="alert alert-danger">{{ message }}</p>
+{% endif %}
+
+<div id="div1" class="p-3 m-3 container table-responsive">
+<h5>Job Post Info</h5>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>Position</td>
+            <td>Department</td>
+            <td>Number Needed</td>
+            <td>Number of Applicants(Max)</td>
+            <td>Description</td>
+            <td>Application Start</td>
+            <td>Application Deadline</td>
+            <td>Review Start</td>
+            <td>OnBoarding</td>
+        </tr>
+    </thead>
+    
+            <td>{{ post.id }}</td>
+            <td>{{ post.position }}</td>
+            <td>{{ post.department }}</td>
+            <td>{{ post.no_positions }}</td>
+            <td>{{ post.no_applicants }}</td>
+            <td>{{ post.description }}</td>
+            <td>{{ post.startdate }}</td>
+            <td>{{ post.enddate }}</td>
+            <td>{{ post.review_startdate }}</td>
+            <td>{{ post.onboarding_date }}</td>
+        </tr>
+</table>
+{% if has_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if has_previous %}
+            <li class="page-item"><a class="page-link" href="{% url 'emp_data' %}?page={{page_number}}&previous=1">Previous</a></li>
+            {% endif %}
+            {% if has_next %}
+            <li class="page-item"><a class="page-link" href="{% url 'emp_data' %}?page={{page_number}}&next=1">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+
+<form method="post" enctype="multipart/form-data" action="{% url 'job_post' post.id %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <input type="text" name="fname" class="form-control mx-auto w-auto" placeholder="First Name" required>
+    </div>
+    <div class="mb-3">
+        <input type="text" name="lname" class="form-control mx-auto w-auto" placeholder="Last Name" required>
+    </div>
+    <div class="mb-3">
+        <input type="email" name="email" class="form-control mx-auto w-auto" placeholder="Email" required>
+    </div>
+    <div class="mb-3">
+        <textarea name="edu" class="form-control mx-auto w-auto" placeholder="Education" required></textarea>
+    </div>
+    <div class="mb-3">
+        <input type="file" class="form-control mx-auto w-auto" name="file" accept="image/*, .pdf">
+    </div> 
+    <div class="text-center">
+    <button type="submit" name="log" class="btn btn-primary">Log Applicant</button></div>
+</form>
+</div>
+
+<div id="div2" class="p-3 m-3 container" style="display: none;">
+<h5>Applicants of Current Post</h5>
+<div class="table-responsive">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+            <td>Education</td>
+            <td>Inteview Log</td>
+        </tr>
+    </thead>
+        {% for app in apps %}
+            <td>{{ app.id }}</td>
+            <td>{{ app.fname }}</td>
+            <td>{{ app.lname }}</td>
+            <td>{{ app.email }}</td>
+            <td>{{ app.education }}</td>
+            <td style="width:50" class="interview_holder">
+                <form class="form">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <textarea name="interview" class="form-control mx-auto textarea"  data-post_id="{{ post.id }}" data-app_id="{{ app.id }}" placeholder="Interview Log" required>{% if app.interview %}{{ app.interview }}{% endif %}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </td>
+            <td><a href="{% url 'download' post_id=post.id app_id=app.id %}">Download File</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    </div>
+    </div>
+{% endblock %}
+
+

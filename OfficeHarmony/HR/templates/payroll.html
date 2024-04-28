@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+{% block nav %}
+    Initial Payroll Management
+{% endblock %}
+{% block menu %}
+<div class="menu">
+    <a href="{% url 'emp' %}" class="btn btn-link">My Profile</a>
+  </div>
+{% endblock %} 
+
+{% block main %}
+{% for message in messages %}
+  <p class="alert alert-danger">{{ message }}</p>
+{% endfor %}
+
+<form class="form"></form>
+<div class="popup" style="display: none;">
+    <form method="post" action="{% url 'payroll' %}">
+        <div class="mb-3">
+        <label>Employee ID</label>
+        <input type="text" name="emp_id" class="form-control mx-auto emp_show" value="0">
+        </div>
+        <div class="mb-3">
+            <label>Base Salary</label>
+            <input type="number" step="0.01" name="base" class="form-control mx-auto" placeholder="Base Salary" required>
+        </div>
+        <div class="mb-3">
+            <select name="benefit" class="form-control mx-auto" multiple>
+                <option value="" selected disabled>Benefits</option>
+                <option value="1">Health Insurance</option>
+                <option value="2">House Rent</option>
+                <option value="3">Travel Allowance</option>
+                <option value="4">Education Assistance</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <select name="retirement" class="form-control mx-auto">
+                <option value="" selected disabled>Retirement</option>
+                <option value="1">None</option>
+                <option value="2">Cut from Base (3%)</option>
+                <option value="3">Free Decision</option>
+                <option value="4">National</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label>Bonus(Percentage)</label>
+            <input type="number" step="0.01" name="bonus" class="form-control mx-auto" value="0" placeholder="Percentage(eg. 0.01)">
+        </div>
+        <button type="submit" name="add_payroll" class="btn btn-success">Done</button>
+        
+    </form>
+    <button class="btn btn-warning mx-auto close">Close</button>
+</div>
+
+<h5>Employees without payroll Info.</h5>
+<div class="table-responsive">
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <td>ID</td>
+            <td colspan="2">Name</td>
+            <td>Email</td>
+            <td>Department</td>
+            <td>Role</td>
+        </tr>
+    </thead>
+    {% for emp in emps %}
+        <tr>
+            <td>{{ emp.id }}</td>
+            <td>{{ emp.fname }}</td>
+            <td>{{ emp.lname }}</td>
+            <td>{{ emp.email }}</td>
+            <td>{{ emp.department }}</td>
+            <td>{{ emp.role }}</td>
+            <td><button class="btn btn-primary pay" data-emp_id="{{ emp.id }}">Add Payroll</button></td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="7">No Data</td>
+        </tr>
+    {% endfor %}
+</table>
+</div>
+{% if has_pages %}
+    <nav>
+        <ul class="pagination">
+            {% if has_previous %}
+            <li class="page-item"><a class="page-link" href="{% url 'emp_data' %}?page={{page_number}}&previous=1">Previous</a></li>
+            {% endif %}
+            {% if has_next %}
+            <li class="page-item"><a class="page-link" href="{% url 'emp_data' %}?page={{page_number}}&next=1">Next</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+{% endblock %}
