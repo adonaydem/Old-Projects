@@ -3,7 +3,7 @@
 #### Description:
 **You can access admin using email: admin@natna.ph password: 12345**
 
-I am Adonay Gebremedhin and this is my first CS50 project. In this project, I have tried to draw upon the experiences I have gained from the 11 weeks of CS50x lectures and problems. I, specifically, used the lecture on flask and JavaScript to implement a dynamic web application.
+In this project, I have tried to draw upon the experiences I have gained from the 11 weeks of CS50x lectures and problems. I, specifically, used the lecture on flask and JavaScript to implement a dynamic web application.
 
 This project is inspired by my sister's pharmacy situated in my home country, Ethiopia. I wanted to use this opportunity to help my family and my community in their day-to-day activities. I think this type of application, although common, is still unutilized and unacknowledged in third world communities like mine. I wanted to contribute something in the area of digitalization of the still numerous paper-based systems in my community.
 
