@@ -23,7 +23,7 @@ app = Flask(__name__)
 app.config['MAIL_SERVER']='smtp.sendgrid.net'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USERNAME'] = 'apikey'
-app.config['MAIL_PASSWORD'] = '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'
+app.config['MAIL_PASSWORD'] = input()
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
