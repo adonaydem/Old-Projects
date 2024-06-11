@@ -7,7 +7,7 @@
 password: 7773788**
 
 
-I am Adonay Demewez Gebremedhin and this is my CS50W final project. In this project, I have tried to draw upon the experiences I have gained from the weeks of CS50w lectures and problems. I, specifically, used Python and JavaScript to implement a dynamic web application.
+In this project, I have tried to draw upon the experiences I have gained from the weeks of CS50w lectures and problems. I, specifically, used Python and JavaScript to implement a dynamic web application.
 
 This web application contains various platforms that will enable a certain company to automate its HR processes. It provides five basic uses: General Data Processing, Recruitment System, Attendance Tracking System, Payroll Management and Employee Training and Career Development.
 
