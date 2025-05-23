@@ -1,5 +1,5 @@
 # Natna Pharmacy Management System
-#### Video Demo:  https://youtu.be/5jOGkdo0cM4
+
 #### Description:
 **You can access admin using email: admin@natna.ph password: 12345**
 
